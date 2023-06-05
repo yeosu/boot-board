@@ -13,8 +13,6 @@ export default {
   name: 'VueMain',
   components: {
     HelloWorld
-
-
   }
 }
 </script>

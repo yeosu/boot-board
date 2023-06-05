@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import VueMain from '@/views/VueMain.vue'
 import BoardList from '@/views/board/BoardList.vue'
 import BoardDetail from "@/views/board/BoardDetail.vue";
+import BoardWrite from "@/views/board/BoardWrite.vue";
+import UserJoin from "@/views/user/UserJoin.vue";
 
 const routes = [
     {
@@ -12,7 +14,12 @@ const routes = [
     {
         path: '/login',
         name: 'VueLogin',
-        component: () => import('../views/VueLogin.vue')
+        component: () => import('../views/user/VueLogin.vue')
+    },
+    {
+        path: '/join',
+        name: 'UserJoin',
+        component: UserJoin
     },
     {
         path: '/board/list',
@@ -23,6 +30,11 @@ const routes = [
         path: '/board/detail',
         name: 'BoardDetail',
         component: BoardDetail
+    },
+    {
+        path: '/board/write',
+        name: 'BoardWrite',
+        component: BoardWrite
     }
 ]
 
