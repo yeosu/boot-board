@@ -1,5 +1,6 @@
 package com.iwi.board.dto;
 
+import com.iwi.board.model.UserEntity;
 import lombok.*;
 
 import java.io.Serializable;
@@ -23,4 +24,15 @@ public class UserDto implements Serializable {
     private String birth;
     private String reg_user;
     private LocalDateTime reg_dt;
+
+    public UserEntity toEntity() {
+        UserEntity userEntity = UserEntity.builder()
+                .userId(userId)
+                .userName(userName)
+                .nickname(nickname)
+                .email(email)
+                .birth(birth)
+                .build();
+        return userEntity;
+    }
 }
