@@ -34,4 +34,15 @@ public class UserService implements UserDetailsService {
         }
         return new User(userEntity.getUserId(), userEntity.getUserPassword(), authorities);
     }
+
+    @Override
+    public insertJoinUser(UserDto userDto) throws Exception {
+
+    }
+
+    private void dupUserId(String userId) {
+        if(userRepository.findByUserId(userId)){
+            throw new RuntimeException();
+        }
+    }
 }
