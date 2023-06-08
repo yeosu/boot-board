@@ -96,9 +96,10 @@ export default {
       console.log("회원가입");
       // this.user 객체에 입력된 회원 정보를 서버로 전송하거나 처리하는 코드
       this.$axios
-          .post(this.$serverUrl + '/user/join', this.user)
+          .post(this.$serverUrl + '/api/user/join', this.user)
           .then(() => {
             alert('회원가입이 완료되었습니다.');
+            this.$router.push("/");
           })
           .catch((err) => {
             if(err.message.indexOf('Network Error') > -1) {

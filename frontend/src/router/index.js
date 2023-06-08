@@ -4,16 +4,18 @@ import BoardList from '@/views/board/BoardList.vue'
 import BoardDetail from "@/views/board/BoardDetail.vue";
 import BoardWrite from "@/views/board/BoardWrite.vue";
 import UserJoin from "@/views/user/UserJoin.vue";
-import {store} from "@/vuex/store"
+import store from "@/vuex/store"
 
 const requireAuth = () => (from, to, next) => {
     const token = localStorage.getItem('user_token')
     if(token){
+        console.log(token);
         store.state.isLogin = true
-        return next
-    }next('/login')
-
+        return next();
+    }
+    next('/login');
 }
+
 
 const routes = [
     {
@@ -34,17 +36,20 @@ const routes = [
     {
         path: '/board/list',
         name: 'BoardList',
-        component: BoardList
+        component: BoardList,
+        beforeEnter: requireAuth()
     },
     {
         path: '/board/detail',
         name: 'BoardDetail',
-        component: BoardDetail
+        component: BoardDetail,
+        beforeEnter: requireAuth()
     },
     {
         path: '/board/write',
         name: 'BoardWrite',
-        component: BoardWrite
+        component: BoardWrite,
+        beforeEnter: requireAuth()
     }
 ]
 

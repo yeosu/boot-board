@@ -11,17 +11,21 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Queue;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
@@ -35,14 +39,36 @@ public class UserService implements UserDetailsService {
         return new User(userEntity.getUserId(), userEntity.getUserPassword(), authorities);
     }
 
-    @Override
-    public insertJoinUser(UserDto userDto) throws Exception {
+    public void insertJoinUser(UserDto userDto) throws Exception {
+        if (isDupUserId(userDto.getUserId())) {
+            throw new IllegalArgumentException("중복된 아이디입니다.");
+        }
+
+        String encodedPassword = passwordEncoder.encode(userDto.getUserPassword()); // 비밀번호 암호화
+
+        // UserEntity 생성 및 저장
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(GenerateId());
+        userEntity.setUserId(userDto.getUserId());
+        userEntity.setUserPassword(encodedPassword);
+        userEntity.setUserName(userDto.getUserName());
+        userEntity.setNickname(userDto.getNickname());
+        userEntity.setEmail(userDto.getEmail());
+        userEntity.setBirth(userDto.getBirth().replace("-",""));
+        userEntity.setRegUser(userEntity.getId().toString());
+        userEntity.setRegDt(LocalDateTime.now());
+        // ... 기타 필요한 정보 설정
+        userRepository.save(userEntity);
 
     }
 
-    private void dupUserId(String userId) {
-        if(userRepository.findByUserId(userId)){
-            throw new RuntimeException();
-        }
+    public boolean isDupUserId(String userId) {
+        Optional<UserEntity> existingUser = userRepository.findByUserId(userId);
+        return existingUser.isPresent(); // 해당 userId에 해당하는 유저가 이미 존재하는지 여부 반환
+    }
+
+    private Long GenerateId() {
+        Long maxId = userRepository.findMaxId();
+        return maxId != null ? maxId + 1 : 1;
     }
 }

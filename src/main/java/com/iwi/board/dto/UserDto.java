@@ -19,7 +19,7 @@ public class UserDto implements Serializable {
     @NonNull
     private String nickname;
     @NonNull
-    private String password;
+    private String userPassword;
     private String email;
     private String birth;
     private String reg_user;
@@ -35,4 +35,5 @@ public class UserDto implements Serializable {
                 .build();
         return userEntity;
     }
+
 }

@@ -27,8 +27,8 @@ let processResponse = (store, loginResponse) => {
 }
 
 export default {
-    async login (store, {user_id, user_pw}) {
-        let loginResponse = await loginAPI.doLogin(user_id, user_pw)
+    async login (store, {user_id, user_password}) {
+        let loginResponse = await loginAPI.doLogin(user_id, user_password)
         processResponse(store, loginResponse)
         return store.getters.getIsAuth
     }

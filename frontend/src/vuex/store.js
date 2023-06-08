@@ -3,7 +3,7 @@ import getters from "./getters"
 import mutations from "./mutations"
 import actions from "./actions";
 
-export default createStore({
+const store = createStore({
     state: {
         user: null,
         isLogin: false,
@@ -12,3 +12,4 @@ export default createStore({
     getters,
     actions
 })
+export default store;

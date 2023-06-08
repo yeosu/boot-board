@@ -9,5 +9,8 @@ export default {
     },
     [types.IS_AUTH] (state, isAuth) {
         state.isAuth = isAuth
+    },
+    [types.SET_LOGIN_STATUS] (state, isLogin) {
+        state.isLogin = isLogin
     }
 }

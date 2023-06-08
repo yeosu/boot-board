@@ -7,7 +7,7 @@ axios.interceptors.request.use(function (config) {
 });
 
 axios.interceptors.response.use(function (config) {
-    return config
+    return config;
 });
 
 export default axios;

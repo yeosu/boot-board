@@ -1,11 +1,15 @@
 <template>
   <header class="Header">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/board/list">Board</router-link> |
-      <router-link to="/login" v-if="!this.$store.state.isLogin">Login</router-link> |
-      <router-link to="/join" v-if="!this.$store.state.isLogin">Join</router-link>
-      <a v-if="this.$store.state.isLogin" @click="fnLogout">Logout</a>
+    <div id="nav" class="nav">
+      <div class="nav-left">
+        <router-link to="/">Home</router-link> |
+        <router-link to="/board/list">Board</router-link> |
+        <router-link to="/login" v-if="!this.$store.state.isLogin">Login</router-link><span v-if="!this.$store.state.isLogin"> | </span>
+        <router-link to="/join" v-if="!this.$store.state.isLogin">Join</router-link>
+      </div>
+      <div class="nav-right">
+        <a style="float: right" v-if="this.$store.state.isLogin" v-on:click="fnLogout">Logout</a>
+      </div>
     </div>
   </header>
   <hr/>
@@ -15,8 +19,9 @@
 export default {
   methods: {
     fnLogout() {
-      localStorage.setItem('user_token', null)
-      localStorage.setItem('user_role', null)
+      localStorage.removeItem('user_token');
+      localStorage.removeItem('user_role');
+      this.$router.push('/');
     }
   }
 }
