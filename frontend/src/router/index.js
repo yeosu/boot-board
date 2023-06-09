@@ -9,7 +9,6 @@ import store from "@/vuex/store"
 const requireAuth = () => (from, to, next) => {
     const token = localStorage.getItem('user_token')
     if(token){
-        console.log(token);
         store.state.isLogin = true
         return next();
     }
