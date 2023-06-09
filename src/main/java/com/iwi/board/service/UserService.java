@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService {
         userEntity.setNickname(userDto.getNickname());
         userEntity.setEmail(userDto.getEmail());
         userEntity.setBirth(userDto.getBirth().replace("-",""));
-        userEntity.setRegUser(userEntity.getId().toString());
+        userEntity.setRegUser(userEntity.getUserId());
         userEntity.setRegDt(LocalDateTime.now());
         // ... 기타 필요한 정보 설정
         userRepository.save(userEntity);
