@@ -2,6 +2,7 @@
   <div class="container">
     <h2>회원가입</h2>
     <form v-on:submit="registerUser">
+      <input type="hidden" id="serverAuthCode" ref="serverAuthCode" v-model="user.serverAuthCode">
       <div class="form-group">
         <label for="userId">아이디</label>
         <input type="text" id="userId" v-model="user.userId" required>
@@ -24,8 +25,14 @@
       </div>
       <div class="form-group">
         <label for="email">이메일</label>
-        <input type="email" id="email" v-model="user.email" required>
+        <input type="email" ref="email" id="email" v-model="user.email" required>
       </div>
+      <div class="form-group" ref="emailAuthArea" style="display: none">
+        <label for="emailAuthCode">이메일 인증 코드</label>
+        <input type="email" ref="emailAuthCode" id="emailAuthCode" v-model="user.emailAuthCode" required>
+      </div>
+      <button type="button" ref="authBtn" v-on:click="fnEmailAuth">인증코드 발송</button>
+      <button type="button" ref="authCompleteBtn" style="display: none" v-on:click="fnCompleteEmailAuth">이메일 인증</button>
       <div class="form-group">
         <label for="birth">생년월일</label>
         <input type="date" id="birth" v-model="user.birth" required>
@@ -51,6 +58,8 @@ export default {
         password: '',
         password2: '',
         email: '',
+        emailAuthCode: '',
+        serverAuthCode: '',
         birth: ''
       },
       errors: {}
@@ -88,12 +97,17 @@ export default {
         return false;
       }
 
+      if(!this.user.emailAuthCode){
+        alert('이메일 인증 코드를 입력해주세요.');
+        return false;
+      }
+
       //유효성 검사 통과여부 확인
       if (Object.keys(this.errors).length > 0) {
         alert('미작성 항목이 존재합니다.');
         return;
       }
-      console.log("회원가입");
+
       // this.user 객체에 입력된 회원 정보를 서버로 전송하거나 처리하는 코드
       this.$axios
           .post(this.$serverUrl + '/api/user/join', this.user)
@@ -106,6 +120,51 @@ export default {
               alert('회원가입 중 오류가 발생했습니다. \n 다시 시도해주세요.')
             }
           });
+    },
+    fnEmailAuth() {
+      if(!this.user.email) {
+        alert('이메일을 입력해주세요');
+        return false;
+      }
+      this.$axios
+          .post(this.$serverUrl + '/api/user/sendEmail', this.user)
+          .then((response) => {
+            alert('이메일 인증 코드가 전송되었습니다.');
+            this.$refs.emailAuthArea.style.display = 'block' ;
+            this.$refs.authBtn.style.display = 'none';
+            this.$refs.authCompleteBtn.style.display = 'block';
+            this.serverAuthCode = response.data;
+            console.log(response.data);
+          })
+          .catch((err) => {
+            if(err.message.indexOf('Network Error') > -1) {
+              alert('이메일 인증 코드 전송 중 오류가 발생했습니다. \n 다시 시도해주세요.')
+            }
+          });
+    },
+    fnCompleteEmailAuth() {
+      if(!this.user.emailAuthCode){
+        alert('이메일 인증 코드를 입력해주세요.');
+        return false;
+      }
+      this.$axios
+          .post(this.$serverUrl + '/api/user/checkEmailAuth', {emailAuthCode: this.user.emailAuthCode, serverAuthCode: this.serverAuthCode})
+          .then((response) => {
+            if(response.data==="Success"){
+              alert("이메일 인증이 완료되었습니다.");
+              this.$refs.email.readOnly=true;
+              this.$refs.emailAuthCode.style.display='none';
+            }else{
+              alert("인증번호가 일치하지 않습니다.");
+            }
+          })
+          .catch((err) => {
+            if(err.message.indexOf('Network Error') > -1){
+              alert('이메일 인증 중 오류가 발생했습니다. \n 다시 시도해주세요.');
+            }else{
+              alert('이메일 인증이 실패했습니다. \n 다시 시도해주세요.');
+            }
+          })
     }
   }
 };

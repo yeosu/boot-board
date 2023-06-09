@@ -28,7 +28,10 @@ public class TokenRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
-            if("/api/user/login".equals(request.getRequestURI()) || "/api/user/join".equals(request.getRequestURI())){
+            if("/api/user/login".equals(request.getRequestURI())
+                    || "/api/user/join".equals(request.getRequestURI())
+                    || "/api/user/sendEmail".equals(request.getRequestURI())
+                    || "/api/user/checkEmailAuth".equals(request.getRequestURI())){
                 doFilter(request, response, filterChain);
             }else{
                 String token = parseJwt(request);

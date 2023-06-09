@@ -8,7 +8,7 @@
         <router-link to="/join" v-if="!this.$store.state.isLogin">Join</router-link>
       </div>
       <div class="nav-right">
-        <a style="float: right" v-if="this.$store.state.isLogin" v-on:click="fnLogout">Logout</a>
+        <a href="javascript:void(0)" style="float: right" v-if="this.$store.state.isLogin" v-on:click="fnLogout">Logout</a>
       </div>
     </div>
   </header>
@@ -22,6 +22,7 @@ export default {
       localStorage.removeItem('user_token');
       localStorage.removeItem('user_role');
       this.$router.push('/');
+      location.reload();
     }
   }
 }

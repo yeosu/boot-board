@@ -7,10 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +30,7 @@ public class UserController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final JavaMailSender javaMailSender;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> userLogin(@RequestBody Map<String, String> paramMap) {
@@ -62,4 +66,43 @@ public class UserController {
         }
     }
 
+    @PostMapping("/sendEmail")
+    public String sendEmail(@RequestBody EmailRequest emailRequest){
+        SimpleMailMessage message = new SimpleMailMessage();
+        String authCode = generateAuthCode();
+        message.setTo(emailRequest.getEmail());
+        message.setSubject("이메일 인증 코드");
+        message.setText("인증 코드 : " + authCode);
+        javaMailSender.send(message);
+
+        return authCode;
+    }
+
+    @PostMapping("/checkEmailAuth")
+    public String checkEmailAuth(@RequestBody Map<String, String> paramMap) {
+        String serverAuthCode = paramMap.get("serverAuthCode");
+        String inputAuthCode = paramMap.get("emailAuthCode");
+        String result = "";
+        if(serverAuthCode.equals(inputAuthCode)){
+            result="Success";
+        }else{
+            result="fail";
+        }
+        return result;
+    }
+
+    private String generateAuthCode() {
+        return String.valueOf((int)(Math.random() * 900000) + 100000);
+    }
+
+    private static class EmailRequest {
+        private String email;
+
+        public String getEmail(){
+            return email;
+        }
+        public void setEmail(String email) {
+            this.email = email;
+        }
+    }
 }
