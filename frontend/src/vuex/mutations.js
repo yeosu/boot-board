@@ -12,5 +12,8 @@ export default {
     },
     [types.SET_LOGIN_STATUS] (state, isLogin) {
         state.isLogin = isLogin
+    },
+    [types.LOADING_STATUS] (state, loadingStatus) {
+        state.loadingStatus = loadingStatus
     }
 }
